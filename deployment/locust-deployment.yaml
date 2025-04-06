@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: locust
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locust
+  template:
+    metadata:
+      labels:
+        app: locust
+    spec:
+      containers:
+      - name: locust
+        image: locustio/locust
+        args: ["-f", "/mnt/locustfile.py", "--host=http://flask-service"]
+        volumeMounts:
+        - mountPath: /mnt
+          name: locustfile-volume
+      volumes:
+      - name: locustfile-volume
+        configMap:
+          name: locustfile-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: locust
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8089
+      targetPort: 8089
+  selector:
+    app: locust

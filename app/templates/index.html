@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flask Greeting</title>
+</head>
+<body>
+    <h1>Flask Greeting Microservice</h1>
+    <input type="text" id="nameInput" placeholder="Enter your name">
+    <button onclick="sendGreeting()">Submit</button>
+    <p id="responseText"></p>
+
+    <script>
+        async function sendGreeting() {
+            const name = document.getElementById("nameInput").value;
+            const response = await fetch("/api/greet", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name })
+            });
+            const data = await response.json();
+            document.getElementById("responseText").innerText = data.message;
+        }
+    </script>
+</body>
+</html>
